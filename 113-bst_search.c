@@ -14,16 +14,26 @@ bst_t *bst_search(const bst_t *tree, int value)
 	if (!tree)
 		return (NULL);
 
-	while (tree->right && tree->left)
+	while (tree)
 	{
 		if (value == tree->n)
 			return ((bst_t *)tree);
 
 		if (value > tree->n)
+		{
+			if (!tree->right)
+				break;
+
 			tree = tree->right;
+		}
 
 		if (value < tree->n)
+		{
+			if (!tree->left)
+				break;
+
 			tree = tree->left;
+		}
 	}
 
 	return (NULL);
