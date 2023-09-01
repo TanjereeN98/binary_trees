@@ -2,18 +2,21 @@
 #include "113-bst_search.c"
 
 /**
- * in_order_successor - Finds first in-order successor
- * @tree: A pointer to the tree to get its first in-order successor
+ * successor - _
+ * @tree: _
  *
- * Return: A pointer to first in-order successor, or NULL if tree is NULL.
+ * Return: _
  */
-bst_t *in_order_successor(bst_t *tree)
+bst_t *successor(bst_t *tree)
 {
 	if (!tree)
 		return (NULL);
 
+	if (!tree->left && !tree->right)
+		return (tree);
+
 	if (!tree->right)
-		return (tree->left ? tree->left : tree);
+		return (tree->left);
 
 	tree = tree->right;
 
@@ -34,23 +37,44 @@ bst_t *in_order_successor(bst_t *tree)
  */
 bst_t *bst_remove(bst_t *root, int value)
 {
-	bst_t *r, *s;
+	bst_t *t, *s;
 
-	if (!root)
+	t = bst_search(root, value);
+
+	if (!t)
 		return (NULL);
 
-	r = bst_search(root, value);
-	s = in_order_successor(r);
+	s = successor(t);
 
 	if (s->n < s->parent->n)
-		s->parent->left = NULL;
+		s->parent->left = s->left;
 
 	if (s->n > s->parent->n)
-		s->parent->right = NULL;
+		s->parent->right = s->right;
 
-	r->n = s->n;
+	if (t != s)
+	{
+		root = t->parent ? root : s;
+		s->parent = t->parent;
 
-	free(s);
+		if (t->parent && t->n < t->parent->n)
+			t->parent->left = s;
+
+		if (t->parent && t->n > t->parent->n)
+			t->parent->right = s;
+
+		if (t->left)
+			t->left->parent = s;
+
+		s->left = t->left;
+
+		if (t->right)
+			t->right->parent = s;
+
+		s->right = t->right;
+	}
+
+	free(t);
 
 	return (root);
 }
