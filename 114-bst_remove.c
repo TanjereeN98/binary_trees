@@ -42,9 +42,13 @@ bst_t *bst_remove(bst_t *root, int value)
 	r = bst_search(root, value);
 	s = in_order_successor(r);
 
-	r->n = s->n;
+	if (s->n < s->parent->n)
+		s->parent->left = NULL;
 
-	s->parent->left = NULL;
+	if (s->n > s->parent->n)
+		s->parent->right = NULL;
+
+	r->n = s->n;
 
 	free(s);
 
